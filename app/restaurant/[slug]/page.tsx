@@ -4,7 +4,7 @@ import Description from "./components/description";
 import Images from "./components/images";
 import Reviews from "./components/reviews";
 import Reservation from "./components/reservation";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Review, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +16,11 @@ const fetchRestaurant = async (slug: string) => {
             images: true,
             description: true,
             slug: true,
+            reviews: {
+                include: {
+                    user: true,
+                },
+            },
         },
         where: {
             slug,
@@ -41,10 +46,10 @@ export default async function RestaurantDetailsPage({
                         {restaurant?.name ?? ""}
                     </h1>
                 </div>
-                <Rating />
+                <Rating reviews={restaurant?.reviews ?? []} />
                 <Description description={restaurant?.description ?? ""} />
                 <Images images={restaurant?.images ?? []} />
-                <Reviews />
+                <Reviews reviews={restaurant?.reviews ?? []} />
             </div>
             <div className="w-[27%] relative text-reg">
                 <Reservation />

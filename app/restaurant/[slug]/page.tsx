@@ -4,8 +4,8 @@ import Description from "./components/description";
 import Images from "./components/images";
 import Reviews from "./components/reviews";
 import Reservation from "./components/reservation";
-import { PrismaClient, Review, User } from "@prisma/client";
 import prisma from "@/app/services/db";
+import { notFound } from "next/navigation";
 
 const fetchRestaurant = async (slug: string) => {
     const restaurant = await prisma.restaurant.findUnique({
@@ -26,6 +26,10 @@ const fetchRestaurant = async (slug: string) => {
         },
     });
 
+    if (!restaurant) {
+        notFound();
+    }
+
     return restaurant;
 };
 
@@ -41,14 +45,12 @@ export default async function RestaurantDetailsPage({
             <div className="bg-white w-[70%] rounded p-3 shadow">
                 <RestaurantNav slug={params.slug} />
                 <div className="mt-4 border-b pb-6">
-                    <h1 className="font-bold text-6xl">
-                        {restaurant?.name ?? ""}
-                    </h1>
+                    <h1 className="font-bold text-6xl">{restaurant.name}</h1>
                 </div>
-                <Rating reviews={restaurant?.reviews ?? []} />
-                <Description description={restaurant?.description ?? ""} />
-                <Images images={restaurant?.images ?? []} />
-                <Reviews reviews={restaurant?.reviews ?? []} />
+                <Rating reviews={restaurant.reviews} />
+                <Description description={restaurant.description} />
+                <Images images={restaurant.images} />
+                <Reviews reviews={restaurant.reviews} />
             </div>
             <div className="w-[27%] relative text-reg">
                 <Reservation />

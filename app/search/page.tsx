@@ -26,10 +26,10 @@ export default async function SearchPage({
                 <SearchSideBar searchParams={searchParams} />
                 <div className="w-5/6">
                     {restaurants.length ? (
-                        restaurants.map((restaurant) => {
+                        restaurants.map((restaurant, index) => {
                             return (
                                 <SearchResult
-                                    key={restaurant.id}
+                                    key={index}
                                     restaurant={restaurant}
                                 />
                             );

@@ -36,12 +36,9 @@ export default async function Home() {
         <main>
             <Header />
             <div className="py-3 px-36 mt-10 flex flex-wrap justify-center">
-                {restaurants.map((restaurant) => {
+                {restaurants.map((restaurant, index) => {
                     return (
-                        <RestaurantCard
-                            key={restaurant.id}
-                            restaurant={restaurant}
-                        />
+                        <RestaurantCard key={index} restaurant={restaurant} />
                     );
                 })}
             </div>

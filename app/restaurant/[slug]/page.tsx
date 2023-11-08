@@ -25,6 +25,7 @@ const fetchRestaurant = async (slug: string) => {
     return restaurant;
 };
 
+// route params are passed as props to our component
 export default async function RestaurantDetailsPage({
     params,
 }: {

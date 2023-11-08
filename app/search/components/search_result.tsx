@@ -1,15 +1,16 @@
 import React from "react";
+import { SearchResultType } from "../page";
 
-export default function SearchResult() {
+export default function SearchResult({
+    details,
+}: {
+    details: SearchResultType;
+}) {
     return (
         <div className="border-b flex pb-5">
-            <img
-                src="https://images.otstatic.com/prod1/49153814/2/medium.jpg"
-                alt=""
-                className="w-44 rounded"
-            />
+            <img src={details.main_image} alt="" className="w-44 rounded" />
             <div className="pl-5">
-                <h2 className="text-3xl">Aiāna Restaurant Collective</h2>
+                <h2 className="text-3xl">{details.name}</h2>
                 <div className="flex items-start">
                     <div className="flex mb-2">*****</div>
                     <p className="ml-2 text-sm">Awesome</p>
@@ -17,8 +18,8 @@ export default function SearchResult() {
                 <div className="mb-9">
                     <div className="font-light flex text-reg">
                         <p className="mr-4">$$$</p>
-                        <p className="mr-4">Mexican</p>
-                        <p className="mr-4">Ottawa</p>
+                        <p className="mr-4">{details.cuisine.name}</p>
+                        <p className="mr-4">{details.location.name}</p>
                     </div>
                 </div>
                 <div className="text-red-600">

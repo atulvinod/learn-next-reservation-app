@@ -1,4 +1,4 @@
-import { Cuisine, PRICE, Location } from "@prisma/client";
+import { Cuisine, PRICE, Location, Review } from "@prisma/client";
 
 export type SearchResultType = {
     id: Number;
@@ -8,6 +8,7 @@ export type SearchResultType = {
     location: Location;
     cuisine: Cuisine;
     slug: string;
+    reviews: Review[];
 };
 
 export type Locations = {

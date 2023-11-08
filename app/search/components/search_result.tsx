@@ -1,10 +1,11 @@
 import Price from "@/app/components/price";
+import Stars from "@/app/components/stars";
 import { SearchResultType } from "@/app/services/types";
 import Link from "next/link";
 import React from "react";
 
 export default function SearchResult({
-     restaurant,
+    restaurant,
 }: {
     restaurant: SearchResultType;
 }) {
@@ -14,7 +15,9 @@ export default function SearchResult({
             <div className="pl-5">
                 <h2 className="text-3xl">{restaurant.name}</h2>
                 <div className="flex items-start">
-                    <div className="flex mb-2">*****</div>
+                    <div className="flex mb-2">
+                        <Stars reviews={restaurant.reviews} />
+                    </div>
                     <p className="ml-2 text-sm">Awesome</p>
                 </div>
                 <div className="mb-9">

@@ -5,8 +5,7 @@ import Images from "./components/images";
 import Reviews from "./components/reviews";
 import Reservation from "./components/reservation";
 import { PrismaClient, Review, User } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/services/db";
 
 const fetchRestaurant = async (slug: string) => {
     const restaurant = await prisma.restaurant.findUnique({

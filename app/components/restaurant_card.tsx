@@ -2,6 +2,7 @@ import React from "react";
 import { RestaurantCardType } from "../page";
 import Link from "next/link";
 import Price from "./price";
+import Stars from "./stars";
 
 export default function RestaurantCard({
     restaurant,
@@ -21,7 +22,9 @@ export default function RestaurantCard({
                         {restaurant.name}
                     </h3>
                     <div className="flex items-start">
-                        <div className="flex mb-2">*****</div>
+                        <div className="flex mb-2">
+                            <Stars reviews={restaurant.reviews} />
+                        </div>
                         <p className="ml-2">
                             {restaurant.reviews.length} reviews
                         </p>

@@ -1,12 +1,11 @@
 import { Cuisine, Location, PRICE, PrismaClient } from "@prisma/client";
 import { Cuisines, Locations, SearchResultType } from "./types";
-
-const prisma = new PrismaClient();
+import prisma from "./db";
 
 export async function findRestaurants(
-    location: string | undefined | null,
-    price: PRICE | null,
-    cuisine_id: number | null
+    location?: string | undefined | null,
+    price?: PRICE | null,
+    cuisine_id?: number | null
 ): Promise<SearchResultType[]> {
     const selectClause = {
         id: true,
@@ -16,6 +15,7 @@ export async function findRestaurants(
         location: true,
         cuisine: true,
         slug: true,
+        reviews: true,
     };
 
     if (!location) {

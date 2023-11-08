@@ -8,15 +8,23 @@ export default function Reviews({
     reviews: (Review & { user: User })[];
 }) {
     return (
-        <div>
-            <h1 className="font-bold text-3xl mt-10 mb-7 borber-b pb-5">
-                What {reviews.length} people are saying
-            </h1>
-            <div>
-                {reviews.map((review) => {
-                    return <ReviewCard key={review.id} review={review} />;
-                })}
-            </div>
-        </div>
+        <>
+            {reviews.length ? (
+                <div>
+                    <h1 className="font-bold text-3xl mt-10 mb-7 border-b pb-5">
+                        What {reviews.length} people are saying
+                    </h1>
+                    <div>
+                        {reviews.map((review) => {
+                            return (
+                                <ReviewCard key={review.id} review={review} />
+                            );
+                        })}
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
+        </>
     );
 }

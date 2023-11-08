@@ -3,9 +3,7 @@ import RestaurantTitle from "../components/title";
 import Menu from "./components/menu";
 import RestaurantNav from "../components/restaurant_nav";
 import Header from "../components/header";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/services/db";
 
 export type RestaurantMenuType = {
     items: {

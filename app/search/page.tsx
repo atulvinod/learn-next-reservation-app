@@ -1,57 +1,42 @@
-"use client";
 import SearchBarHeader from "./components/search_bar_header";
 import SearchResult from "./components/search_result";
 import SearchSideBar from "./components/sidebar";
-import { useEffect, useState } from "react";
-import { SearchResultType } from "../api/restaurants/search/route";
+import { findRestaurants } from "../services/restaurant";
+import { PRICE } from "@prisma/client";
 
-async function findRestaurants(
-    searchQuery: string
-): Promise<SearchResultType[]> {
-    const response = await fetch(
-        `/api/restaurants/search?query=${searchQuery}`
-    );
-    if (response.ok) {
-        const jsonData = await response.json();
-        return jsonData.data;
-    }
-    return [];
-}
-
-export default function SearchPage({
+export default async function SearchPage({
     searchParams,
 }: {
-    searchParams: { query: string };
+    searchParams: {
+        query: string;
+        cuisine: number;
+        price: PRICE;
+    };
 }) {
-    const [restaurants, setRestaurants] = useState<SearchResultType[]>([]);
+    const query = searchParams.query;
+    const cuisine = searchParams.cuisine;
+    const price = searchParams.price;
 
-    function executeSearch(query: string) {
-        findRestaurants(query).then((results) => {
-            setRestaurants([...results]);
-        });
-    }
-
-    useEffect(() => {
-        executeSearch(searchParams.query);
-    }, [searchParams.query]);
+    const restaurants = await findRestaurants(query, price, cuisine);
 
     return (
         <>
-            <SearchBarHeader
-                query={searchParams.query}
-                onSearch={executeSearch}
-            />
+            <SearchBarHeader query={query} />
             <div className="flex py-4 m-auto w-2/3 justify-between items-start">
-                <SearchSideBar />
+                <SearchSideBar searchParams={searchParams} />
                 <div className="w-5/6">
-                    {restaurants.map((restaurant) => {
-                        return (
-                            <SearchResult
-                                key={restaurant.id}
-                                details={restaurant}
-                            />
-                        );
-                    })}
+                    {restaurants.length ? (
+                        restaurants.map((restaurant) => {
+                            return (
+                                <SearchResult
+                                    key={restaurant.id}
+                                    restaurant={restaurant}
+                                />
+                            );
+                        })
+                    ) : (
+                        <p>No restaurants found</p>
+                    )}
                 </div>
             </div>
         </>

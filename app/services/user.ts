@@ -1,4 +1,9 @@
-import { signupRequest, validateSignupBody } from "./validation_schemas";
+import {
+    loginRequest,
+    signupRequest,
+    validateLoginBody,
+    validateSignupBody,
+} from "./validation_schemas";
 import prisma from "./db";
 import RequestError from "../models/request_error";
 import * as bcrypt from "bcrypt";
@@ -47,17 +52,19 @@ export async function attemptUserSignup(request: signupRequest) {
     return { user: { firstName, lastName, city, phone, email }, jwt };
 }
 
-export async function attemptUserLogin(email: string, password: string) {
+export async function attemptUserLogin(loginRequest: loginRequest) {
+    await validateLoginBody(loginRequest);
+    const { email, password } = loginRequest;
     const user = await getUser(email);
     if (!user) {
         throw new RequestError(
             "No user exists with this email",
-            StatusCodes.NOT_FOUND
+            StatusCodes.UNAUTHORIZED
         );
     }
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
-        throw new RequestError("Incorrect password", StatusCodes.FORBIDDEN);
+        throw new RequestError("Incorrect password", StatusCodes.UNAUTHORIZED);
     }
     const jwt = generateJWT({
         firstName: user.first_name,

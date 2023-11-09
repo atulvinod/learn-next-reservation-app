@@ -21,7 +21,7 @@ export default function SearchBarHeader({ query }: { query: string }) {
                     className="rounded bg-red-600 px-9 py-2 text-white"
                     onClick={() => router.push(`/search?query=${searchQuery}`)}
                 >
-                    Let's go
+                    Let&apos;s go
                 </button>
             </div>
         </div>

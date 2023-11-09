@@ -12,7 +12,7 @@ export default function Error({ error }: { error: Error }) {
                     Well, this is embarrassing
                 </h3>
                 <p className="text-reg font-bold">
-                    We couldn't find the restaurant{" "}
+                    We couldn&apos;t find the restaurant{" "}
                 </p>
                 <p className="mt-6 text-sm font-light">Error Code: 400</p>
             </div>

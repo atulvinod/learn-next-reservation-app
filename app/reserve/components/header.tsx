@@ -3,7 +3,7 @@ import React from "react";
 export default function ReservationHeader() {
     return (
         <div>
-            <h3 className="font-bold">You're almost done!</h3>
+            <h3 className="font-bold">You&apos;re almost done!</h3>
             <div className="mt-5 flex">
                 <img
                     src="https://images.otstatic.com/prod1/49153814/2/medium.jpg"

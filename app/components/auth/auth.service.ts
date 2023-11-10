@@ -1,10 +1,11 @@
+import { AuthUser } from "@/app/context/auth_context";
 import { loginRequest, signupRequest } from "@/app/services/validation_schemas";
 import { User } from "@prisma/client";
 
 interface AuthApiResponse {
     isSuccess: boolean;
     errors?: [] | string;
-    data?: (User & { jwt: string }) | undefined;
+    data?: AuthUser | undefined;
 }
 
 export async function submitSignupDetails(

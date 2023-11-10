@@ -1,11 +1,12 @@
 "use client";
 import { signupValidationSchema } from "@/app/services/validation_schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { Button, CircularProgress, TextField } from "@mui/material";
+import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import BaseModal from "../base_modal";
 import { submitSignupDetails } from "./auth.service";
+import { authContext } from "@/app/context/auth_context";
 
 type Inputs = {
     firstName: string;
@@ -19,6 +20,7 @@ type Inputs = {
 export default function SignupModal() {
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
     const [apiError, setApiError] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const {
         register,
         handleSubmit,
@@ -26,11 +28,29 @@ export default function SignupModal() {
     } = useForm<Inputs>({
         resolver: yupResolver(signupValidationSchema),
     });
+    const { setUser } = useContext(authContext);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
         const response = await submitSignupDetails(data);
+        setIsLoading(false);
         if (response.isSuccess) {
-            setIsSignupModalOpen(false);
+            if (response.data) {
+                const { firstName, lastName, email, id, jwt } = response.data;
+                setUser({
+                    user: {
+                        firstName,
+                        lastName,
+                        email,
+                        id,
+                        jwt,
+                    },
+                });
+                setIsSignupModalOpen(false);
+            }
         } else {
             if (response.errors) {
                 const errors = [];
@@ -62,83 +82,89 @@ export default function SignupModal() {
                 <div className="m-auto">
                     <h2 className="text-2xl font-light text-center">
                         <p>Create a new Account</p>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="my-3 flex justify-between text-sm">
-                                <TextField
-                                    error={Boolean(errors?.firstName)}
-                                    label="First name"
-                                    variant="outlined"
-                                    {...register("firstName")}
-                                    style={{ marginRight: "5px" }}
-                                    helperText={errors?.firstName?.message}
-                                />
-                                <TextField
-                                    error={Boolean(errors?.lastName)}
-                                    label="Last name"
-                                    variant="outlined"
-                                    {...register("lastName")}
-                                    style={{ marginLeft: "5px" }}
-                                    helperText={errors?.lastName?.message}
-                                />
+                        {isLoading ? (
+                            <div className="flex justify-center items-center h-40">
+                                <CircularProgress />
                             </div>
-                            <div>
-                                <TextField
-                                    error={Boolean(errors?.email)}
-                                    fullWidth
-                                    label="Email"
-                                    variant="outlined"
-                                    {...register("email")}
-                                    helperText={errors?.email?.message}
-                                />
-                            </div>
-                            <div className="my-3 flex justify-between text-sm">
-                                <TextField
-                                    error={Boolean(errors?.phone)}
-                                    label="Phone"
-                                    variant="outlined"
-                                    {...register("phone")}
-                                    style={{ marginRight: "5px" }}
-                                    helperText={errors?.phone?.message}
-                                />
-                                <TextField
-                                    error={Boolean(errors?.city)}
-                                    label="City"
-                                    variant="outlined"
-                                    {...register("city")}
-                                    style={{ marginLeft: "5px" }}
-                                    helperText={errors?.city?.message}
-                                />
-                            </div>
-                            <div>
-                                <TextField
-                                    error={Boolean(errors?.password)}
-                                    fullWidth
-                                    label="Password"
-                                    variant="outlined"
-                                    {...register("password")}
-                                    helperText={errors?.password?.message}
-                                    type="password"
-                                />
-                            </div>
-                            <ul className="text-sm text-left mt-5 text-red-700">
-                                {apiError.map((error, index) => {
-                                    return <li key={index}>{error}</li>;
-                                })}
-                            </ul>
-                            <div className="my-5">
-                                <Button
-                                    disabled={!isValid}
-                                    variant="contained"
-                                    type="submit"
-                                    fullWidth
-                                    style={{
-                                        backgroundColor: "rgb(220, 38, 38)",
-                                    }}
-                                >
-                                    Proceed
-                                </Button>
-                            </div>
-                        </form>
+                        ) : (
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="my-3 flex justify-between text-sm">
+                                    <TextField
+                                        error={Boolean(errors?.firstName)}
+                                        label="First name"
+                                        variant="outlined"
+                                        {...register("firstName")}
+                                        style={{ marginRight: "5px" }}
+                                        helperText={errors?.firstName?.message}
+                                    />
+                                    <TextField
+                                        error={Boolean(errors?.lastName)}
+                                        label="Last name"
+                                        variant="outlined"
+                                        {...register("lastName")}
+                                        style={{ marginLeft: "5px" }}
+                                        helperText={errors?.lastName?.message}
+                                    />
+                                </div>
+                                <div>
+                                    <TextField
+                                        error={Boolean(errors?.email)}
+                                        fullWidth
+                                        label="Email"
+                                        variant="outlined"
+                                        {...register("email")}
+                                        helperText={errors?.email?.message}
+                                    />
+                                </div>
+                                <div className="my-3 flex justify-between text-sm">
+                                    <TextField
+                                        error={Boolean(errors?.phone)}
+                                        label="Phone"
+                                        variant="outlined"
+                                        {...register("phone")}
+                                        style={{ marginRight: "5px" }}
+                                        helperText={errors?.phone?.message}
+                                    />
+                                    <TextField
+                                        error={Boolean(errors?.city)}
+                                        label="City"
+                                        variant="outlined"
+                                        {...register("city")}
+                                        style={{ marginLeft: "5px" }}
+                                        helperText={errors?.city?.message}
+                                    />
+                                </div>
+                                <div>
+                                    <TextField
+                                        error={Boolean(errors?.password)}
+                                        fullWidth
+                                        label="Password"
+                                        variant="outlined"
+                                        {...register("password")}
+                                        helperText={errors?.password?.message}
+                                        type="password"
+                                    />
+                                </div>
+                                <ul className="text-sm text-left mt-5 text-red-700">
+                                    {apiError.map((error, index) => {
+                                        return <li key={index}>{error}</li>;
+                                    })}
+                                </ul>
+                                <div className="my-5">
+                                    <Button
+                                        disabled={!isValid}
+                                        variant="contained"
+                                        type="submit"
+                                        fullWidth
+                                        style={{
+                                            backgroundColor: "rgb(220, 38, 38)",
+                                        }}
+                                    >
+                                        Proceed
+                                    </Button>
+                                </div>
+                            </form>
+                        )}
                     </h2>
                 </div>
             </BaseModal>

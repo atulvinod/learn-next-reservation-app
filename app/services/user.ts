@@ -67,8 +67,6 @@ export async function attemptUserLogin(loginRequest: loginRequest) {
         throw new RequestError("Incorrect password", StatusCodes.UNAUTHORIZED);
     }
     const jwt = generateJWT({
-        firstName: user.first_name,
-        lastName: user.last_name,
         email: user.email,
         id: user.id,
     });
@@ -110,12 +108,15 @@ function generateJWT(payload: Object) {
     return token;
 }
 
-export function decryptToken(token: string) {
+export function decryptTokenAndGetEmail(token: string): string {
     try {
         const result = jwt.verify(token, process.env.JWT_SECRET!!, {
             complete: true,
         });
-        return result.payload;
+        if (typeof result.payload == "string") {
+            return result.payload;
+        }
+        return result.payload.email;
     } catch (error: any) {
         throw new RequestError(error.message, StatusCodes.UNAUTHORIZED);
     }

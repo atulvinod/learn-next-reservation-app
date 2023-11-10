@@ -16,7 +16,6 @@ type Inputs = {
 export default function LoginModal() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     const [apiError, setApiError] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
         register,
@@ -26,20 +25,20 @@ export default function LoginModal() {
         mode: "all",
         resolver: yupResolver(loginValidationSchema),
     });
-    const { setUser } = useContext(authContext);
+    const { setAuthState, isLoadingAuth, user } = useContext(authContext);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        if (isLoading) {
+        if (isLoadingAuth) {
             return;
         }
-        setIsLoading(true);
+        setAuthState({ user, isLoadingAuth: true });
         const response = await submitLoginDetails(data);
-        setIsLoading(false);
+        setAuthState({ user, isLoadingAuth: false });
         if (response.isSuccess) {
             if (response.data) {
                 console.log(response.data);
                 const { firstName, lastName, email, id, jwt } = response.data;
-                setUser({
+                setAuthState({
                     user: {
                         firstName,
                         lastName,
@@ -47,6 +46,7 @@ export default function LoginModal() {
                         id,
                         jwt,
                     },
+                    isLoadingAuth: false,
                 });
                 setLoginModalOpen(false);
             }
@@ -82,7 +82,7 @@ export default function LoginModal() {
                     <h2 className="text-2xl font-light text-center">
                         <p>Log Into your account</p>
                     </h2>
-                    {isLoading ? (
+                    {isLoadingAuth ? (
                         <div className="flex justify-center items-center h-40">
                             <CircularProgress />
                         </div>

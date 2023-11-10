@@ -20,7 +20,7 @@ type Inputs = {
 export default function SignupModal() {
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
     const [apiError, setApiError] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const {
         register,
         handleSubmit,
@@ -28,19 +28,19 @@ export default function SignupModal() {
     } = useForm<Inputs>({
         resolver: yupResolver(signupValidationSchema),
     });
-    const { setUser } = useContext(authContext);
+    const { setAuthState, isLoadingAuth, user } = useContext(authContext);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        if (isLoading) {
+        if (isLoadingAuth) {
             return;
         }
-        setIsLoading(true);
+        setAuthState({ user, isLoadingAuth: true });
         const response = await submitSignupDetails(data);
-        setIsLoading(false);
+        setAuthState({ user, isLoadingAuth: false });
         if (response.isSuccess) {
             if (response.data) {
                 const { firstName, lastName, email, id, jwt } = response.data;
-                setUser({
+                setAuthState({
                     user: {
                         firstName,
                         lastName,
@@ -48,6 +48,7 @@ export default function SignupModal() {
                         id,
                         jwt,
                     },
+                    isLoadingAuth: false,
                 });
                 setIsSignupModalOpen(false);
             }
@@ -82,7 +83,7 @@ export default function SignupModal() {
                 <div className="m-auto">
                     <h2 className="text-2xl font-light text-center">
                         <p>Create a new Account</p>
-                        {isLoading ? (
+                        {isLoadingAuth ? (
                             <div className="flex justify-center items-center h-40">
                                 <CircularProgress />
                             </div>

@@ -1,6 +1,7 @@
 import { AuthUser } from "@/app/context/auth_context";
 import { loginRequest, signupRequest } from "@/app/services/validation_schemas";
-import { User } from "@prisma/client";
+import { default as axios } from "axios";
+import { StatusCodes } from "http-status-codes";
 
 interface AuthApiResponse {
     isSuccess: boolean;
@@ -11,12 +12,9 @@ interface AuthApiResponse {
 export async function submitSignupDetails(
     signupDetails: signupRequest
 ): Promise<AuthApiResponse> {
-    const response = await fetch(`/api/auth/signup`, {
-        method: "POST",
-        body: JSON.stringify(signupDetails),
-    });
-    const responseBody = await response.json();
-    if (response.ok) {
+    const response = await axios.post(`/api/auth/signup`, { signupDetails });
+    const responseBody = response.data;
+    if (response.status == StatusCodes.OK) {
         return { isSuccess: true, data: responseBody.data };
     }
     return { isSuccess: false, errors: responseBody.error };
@@ -25,12 +23,9 @@ export async function submitSignupDetails(
 export async function submitLoginDetails(
     loginDetails: loginRequest
 ): Promise<AuthApiResponse> {
-    const response = await fetch(`api/auth/signin`, {
-        method: "POST",
-        body: JSON.stringify(loginDetails),
-    });
-    const responseBody = await response.json();
-    if (response.ok) {
+    const response = await axios.post(`api/auth/signin`, { loginDetails });
+    const responseBody = await response.data;
+    if (response.status == StatusCodes.OK) {
         return { isSuccess: true, data: responseBody.data };
     }
     return { isSuccess: false, errors: responseBody.error };

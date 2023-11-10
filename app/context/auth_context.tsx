@@ -1,5 +1,8 @@
 "use client";
-import React, { useState, createContext } from "react";
+import { getCookie } from "cookies-next";
+import React, { useState, createContext, useEffect } from "react";
+import { default as axios } from "axios";
+import { StatusCodes } from "http-status-codes";
 
 export interface AuthUser {
     firstName: string;
@@ -11,15 +14,17 @@ export interface AuthUser {
 
 interface State {
     user: AuthUser | null;
+    isLoadingAuth: boolean;
 }
 
 interface AuthState extends State {
-    setUser: React.Dispatch<React.SetStateAction<State>>;
+    setAuthState: React.Dispatch<React.SetStateAction<State>>;
 }
 
 export const authContext = createContext<AuthState>({
+    isLoadingAuth: false,
     user: null,
-    setUser: () => {},
+    setAuthState: () => {},
 });
 
 export default function AuthContext({
@@ -27,12 +32,41 @@ export default function AuthContext({
 }: {
     children: React.ReactNode;
 }) {
-    const [state, setUser] = useState<State>({
+    const [state, setAuthState] = useState<State>({
+        isLoadingAuth: false,
         user: null,
     });
 
+    const getUserFromCookie = async () => {
+        const token = getCookie("jwt");
+        if (token) {
+            setAuthState({ ...state, isLoadingAuth: true });
+            const response = await axios.get<{ data: AuthUser }>(
+                `/api/auth/me`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.status == StatusCodes.OK) {
+                setAuthState({
+                    user: response.data.data,
+                    isLoadingAuth: false,
+                });
+                axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+            } else {
+                setAuthState({ ...state, isLoadingAuth: false });
+            }
+        }
+    };
+
+    useEffect(() => {
+        getUserFromCookie();
+    }, []);
+
     return (
-        <authContext.Provider value={{ ...state, setUser }}>
+        <authContext.Provider value={{ ...state, setAuthState: setAuthState }}>
             {children}
         </authContext.Provider>
     );

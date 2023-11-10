@@ -1,9 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import BaseModal from "../base_modal";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, TextField } from "@mui/material";
-import { yupResolver } from "@hookform/resolvers/yup";
+"use client";
 import { signupValidationSchema } from "@/app/services/validation_schemas";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, TextField } from "@mui/material";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import BaseModal from "../base_modal";
 import { submitSignupDetails } from "./auth.service";
 
 type Inputs = {

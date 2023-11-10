@@ -7,7 +7,7 @@ import {
 import prisma from "./db";
 import RequestError from "../models/request_error";
 import * as bcrypt from "bcrypt";
-import { sign } from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 
 async function getUser(email: string) {
@@ -101,11 +101,22 @@ function generateJWT(payload: Object) {
         throw new Error("JWT_SECRET is required");
     }
 
-    const token = sign(payload, secret, {
+    const token = jwt.sign(payload, secret, {
         expiresIn,
         audience,
         issuer,
     });
 
     return token;
+}
+
+export function decryptToken(token: string) {
+    try {
+        const result = jwt.verify(token, process.env.JWT_SECRET!!, {
+            complete: true,
+        });
+        return result.payload;
+    } catch (error: any) {
+        throw new RequestError(error.message, StatusCodes.BAD_REQUEST);
+    }
 }

@@ -12,12 +12,12 @@ export function handleError(error: Error){
     }
     if (error instanceof RequestError) {
         return NextResponse.json(
-            { error: error.message },
-            { status: error.status }
+            { error: error.message ?? "Unexpected error" },
+            { status: error.status ?? StatusCodes.INTERNAL_SERVER_ERROR }
         );
     }
     return NextResponse.json(
-        { error: "Unexpected error!" },
+        { error: error.message ?? "Unexpected error!" },
         { status: StatusCodes.INTERNAL_SERVER_ERROR }
     );
 }

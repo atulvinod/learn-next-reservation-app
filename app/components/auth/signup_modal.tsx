@@ -26,17 +26,19 @@ export default function SignupModal() {
         handleSubmit,
         formState: { errors, isValid },
     } = useForm<Inputs>({
+        mode: "all",
         resolver: yupResolver(signupValidationSchema),
     });
-    const { setAuthState, isLoadingAuth, user } = useContext(authContext);
+    const { setAuthState } = useContext(authContext);
+    const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         if (isLoadingAuth) {
             return;
         }
-        setAuthState({ user, isLoadingAuth: true });
+        setIsLoadingAuth(true);
         const response = await submitSignupDetails(data);
-        setAuthState({ user, isLoadingAuth: false });
+        setIsLoadingAuth(false);
         if (response.isSuccess) {
             if (response.data) {
                 const { firstName, lastName, email, id, jwt } = response.data;

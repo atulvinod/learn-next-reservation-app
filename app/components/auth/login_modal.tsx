@@ -2,7 +2,7 @@
 import { loginValidationSchema } from "@/app/services/validation_schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, CircularProgress, TextField, Alert } from "@mui/material";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import BaseModal from "../base_modal";
 import { submitLoginDetails } from "./auth.service";
@@ -16,7 +16,6 @@ type Inputs = {
 export default function LoginModal() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     const [apiError, setApiError] = useState<string[]>([]);
-
     const {
         register,
         handleSubmit,
@@ -25,15 +24,16 @@ export default function LoginModal() {
         mode: "all",
         resolver: yupResolver(loginValidationSchema),
     });
-    const { setAuthState, isLoadingAuth, user } = useContext(authContext);
+    const { setAuthState } = useContext(authContext);
+    const [isLoadingAuth, setIsLoading] = useState(false);
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
         if (isLoadingAuth) {
             return;
         }
-        setAuthState({ user, isLoadingAuth: true });
+        setIsLoading(true);
         const response = await submitLoginDetails(data);
-        setAuthState({ user, isLoadingAuth: false });
+        setIsLoading(false);
         if (response.isSuccess) {
             if (response.data) {
                 console.log(response.data);

@@ -33,7 +33,7 @@ export default function AuthContext({
     children: React.ReactNode;
 }) {
     const [state, setAuthState] = useState<State>({
-        isLoadingAuth: false,
+        isLoadingAuth: true,
         user: null,
     });
 
@@ -57,15 +57,15 @@ export default function AuthContext({
                 axios.defaults.headers.common[
                     "Authorization"
                 ] = `Bearer ${token}`;
-            } else {
-                setAuthState({ ...state, isLoadingAuth: false });
             }
         }
+        setAuthState({ ...state, isLoadingAuth: false });
     };
 
     useEffect(() => {
         getUserFromCookie();
     }, []);
+
 
     return (
         <authContext.Provider value={{ ...state, setAuthState: setAuthState }}>

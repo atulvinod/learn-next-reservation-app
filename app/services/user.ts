@@ -10,7 +10,7 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 
-async function getUser(email: string) {
+export async function getUser(email: string) {
     return prisma.user.findUnique({
         where: {
             email,
@@ -117,6 +117,6 @@ export function decryptToken(token: string) {
         });
         return result.payload;
     } catch (error: any) {
-        throw new RequestError(error.message, StatusCodes.BAD_REQUEST);
+        throw new RequestError(error.message, StatusCodes.UNAUTHORIZED);
     }
 }

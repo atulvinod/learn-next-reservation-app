@@ -1,15 +1,14 @@
-import RequestError from "@/app/models/request_error";
 import { attemptUserSignup } from "@/app/services/user";
-import { StatusCodes } from "http-status-codes";
-import { NextRequest, NextResponse } from "next/server";
-import { ValidationError } from "yup";
+import { NextRequest } from "next/server";
 import { handleError } from "../../error_handler";
+import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
     const requestDetails = await request.json();
 
     try {
         const signUpResult = await attemptUserSignup(requestDetails);
+        cookies().set("jwt", signUpResult.jwt);
         return Response.json({
             message: "Sign-up successful",
             data: signUpResult,

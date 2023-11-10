@@ -1,7 +1,7 @@
 "use client";
 import { loginValidationSchema } from "@/app/services/validation_schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, CircularProgress, TextField } from "@mui/material";
+import { Button, CircularProgress, TextField, Alert } from "@mui/material";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import BaseModal from "../base_modal";
@@ -109,7 +109,13 @@ export default function LoginModal() {
                             />
                             <ul className="text-sm text-left mt-5 text-red-700">
                                 {apiError.map((error, index) => {
-                                    return <li key={index}>{error}</li>;
+                                    return (
+                                        <li key={index}>
+                                            <Alert severity="error">
+                                                {error}
+                                            </Alert>
+                                        </li>
+                                    );
                                 })}
                             </ul>
                             <div className="my-3">

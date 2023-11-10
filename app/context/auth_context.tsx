@@ -54,7 +54,9 @@ export default function AuthContext({
                     user: response.data.data,
                     isLoadingAuth: false,
                 });
-                axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${token}`;
             } else {
                 setAuthState({ ...state, isLoadingAuth: false });
             }

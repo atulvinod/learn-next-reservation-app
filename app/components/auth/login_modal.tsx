@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
-import BaseModal from "../base_modal";
-import { Box, Button, TextField } from "@mui/material";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { loginValidationSchema } from "@/app/services/validation_schemas";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, TextField } from "@mui/material";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import BaseModal from "../base_modal";
 import { submitLoginDetails } from "./auth.service";
 
 type Inputs = {
@@ -19,8 +18,9 @@ export default function LoginModal() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<Inputs>({
+        mode: "all",
         resolver: yupResolver(loginValidationSchema),
     });
 
@@ -86,6 +86,7 @@ export default function LoginModal() {
                         </ul>
                         <div className="my-3">
                             <Button
+                                disabled={!isValid}
                                 variant="contained"
                                 type="submit"
                                 fullWidth

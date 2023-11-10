@@ -21,7 +21,7 @@ export default function SignupModal() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<Inputs>({
         resolver: yupResolver(signupValidationSchema),
     });
@@ -126,6 +126,7 @@ export default function SignupModal() {
                             </ul>
                             <div className="my-5">
                                 <Button
+                                    disabled={!isValid}
                                     variant="contained"
                                     type="submit"
                                     fullWidth

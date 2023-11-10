@@ -33,7 +33,7 @@ export async function submitLoginDetails(
     loginDetails: loginRequest
 ): Promise<AuthApiResponse> {
     try {
-        const response = await axios.post(`api/auth/signin`, loginDetails);
+        const response = await axios.post(`/api/auth/signin`, loginDetails);
         const responseBody = await response.data;
         if (response.status == StatusCodes.OK) {
             return { isSuccess: true, data: responseBody.data };

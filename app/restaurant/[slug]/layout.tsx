@@ -1,5 +1,6 @@
 import Header from "./components/header";
 import Loading from "../loading";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function RestaurantLayout({
     children,

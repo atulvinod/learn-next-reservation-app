@@ -2,6 +2,7 @@ import { Cuisine, Location, PRICE, PrismaClient, Review } from "@prisma/client";
 import Header from "./components/header";
 import RestaurantCard from "./components/restaurant_card";
 import prisma from "./services/db";
+import Loading from "./loading";
 
 export interface RestaurantCardType {
     id: Number;

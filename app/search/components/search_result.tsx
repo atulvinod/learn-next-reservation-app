@@ -18,7 +18,6 @@ export default function SearchResult({
                     <div className="flex mb-2">
                         <Stars reviews={restaurant.reviews} />
                     </div>
-                    <p className="ml-2 text-sm">Awesome</p>
                 </div>
                 <div className="mb-9">
                     <div className="font-light flex text-reg">

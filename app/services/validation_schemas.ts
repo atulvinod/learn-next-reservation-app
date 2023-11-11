@@ -30,10 +30,21 @@ export const loginValidationSchema = yup
     })
     .required();
 
-// --- VALIDATION SCHEMA TYPES --- 
+export const reserveSchema = yup
+    .object({
+        bookerFirstName: yup.string().required(),
+        bookerLastName: yup.string().required(),
+        bookerPhone: yup.string().required(),
+        bookerEmail: yup.string().required().email(),
+        bookerOccasion: yup.string(),
+        bookerRequest: yup.string(),
+    })
+    .required();
+
+// --- VALIDATION SCHEMA TYPES ---
 export type signupRequest = InferType<typeof signupValidationSchema>;
 export type loginRequest = InferType<typeof loginValidationSchema>;
-
+export type reserveRequest = InferType<typeof reserveSchema>;
 
 // ---- VALIDATION FUNCTIONS --
 export const validateSignupBody = async (request: signupRequest) => {
@@ -42,4 +53,8 @@ export const validateSignupBody = async (request: signupRequest) => {
 
 export const validateLoginBody = async (request: loginRequest) => {
     return loginValidationSchema.validate(request);
+};
+
+export const validateReserveRequest = async (request: reserveRequest) => {
+    return reserveSchema.validate(request);
 };

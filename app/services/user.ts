@@ -49,7 +49,7 @@ export async function attemptUserSignup(request: signupRequest) {
         email,
         id: new_user.id,
     });
-    return { user: { firstName, lastName, city, phone, email }, jwt };
+    return { firstName, lastName, city, phone, email, id: new_user.id, jwt };
 }
 
 export async function attemptUserLogin(loginRequest: loginRequest) {

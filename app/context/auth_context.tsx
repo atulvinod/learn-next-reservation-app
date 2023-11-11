@@ -41,23 +41,24 @@ export default function AuthContext({
         const token = getCookie("jwt");
         if (token) {
             setAuthState({ ...state, isLoadingAuth: true });
-            const response = await axios.get<{ data: AuthUser }>(
-                `/api/auth/me`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            if (response.status == StatusCodes.OK) {
+            try {
+                const response = await axios.get<{ data: AuthUser }>(
+                    `/api/auth/me`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
                 setAuthState({
-                    user: response.data.data,
+                    user: { ...response.data.data, jwt: token },
                     isLoadingAuth: false,
                 });
                 axios.defaults.headers.common[
                     "Authorization"
                 ] = `Bearer ${token}`;
-            }
+                return;
+            } catch (error) {} 
         }
         setAuthState({ ...state, isLoadingAuth: false });
     };

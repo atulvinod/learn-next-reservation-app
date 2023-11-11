@@ -36,7 +36,6 @@ export default function LoginModal() {
         setIsLoading(false);
         if (response.isSuccess) {
             if (response.data) {
-                console.log(response.data);
                 const { firstName, lastName, email, id, jwt } = response.data;
                 setAuthState({
                     user: {

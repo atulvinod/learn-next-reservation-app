@@ -29,7 +29,7 @@ export default function SignupModal() {
         mode: "all",
         resolver: yupResolver(signupValidationSchema),
     });
-    const { setAuthState } = useContext(authContext);
+    const { setAuthState, user } = useContext(authContext);
     const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {

@@ -55,7 +55,11 @@ export default async function RestaurantDetailsPage({
                 <Reviews reviews={restaurant.reviews} />
             </div>
             <div className="w-[27%] relative text-reg">
-                <Reservation open_time={restaurant.open_time} close_time={restaurant.close_time} />
+                <Reservation
+                    open_time={restaurant.open_time}
+                    close_time={restaurant.close_time}
+                    slug={restaurant.slug}
+                />
             </div>
         </>
     );
